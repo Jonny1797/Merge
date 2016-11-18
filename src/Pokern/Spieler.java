@@ -15,7 +15,6 @@ public class Spieler {
 		this.name = Name;
 		//this.geld = Geld;
 	}
-	public Spieler(){}
 
 	//KARTEN############################################################################################################
 	public void bekommeKarte(Karte karte){

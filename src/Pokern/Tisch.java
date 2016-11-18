@@ -69,7 +69,7 @@ public class Tisch implements Runnable{
                 rundeEins();
                 nextSpieler();
             }
-            for (int i=0;i<3;i++){
+            for (int i=0; i<3; i++){
                 gibTischKarte();
                 System.out.println("Karte " + i + ":\t " + tischKarten.get(i).getColor() + ", " + tischKarten.get(i).getValue());
             }
@@ -99,6 +99,7 @@ public class Tisch implements Runnable{
     //DEALER############################################################################################################
     public void setDealer(){
         dealerSpielerIndex = (int) (Math.random() * (mitSpieler.size()-1));
+        System.out.println("Der Dealer ist nun " + getDealer().name);
     }
     //dealer------------------------------------------------------------------------------------------------------------
     public void setNextDealer(){
@@ -106,6 +107,9 @@ public class Tisch implements Runnable{
         if(dealerSpielerIndex >= mitSpieler.size()){
             dealerSpielerIndex = 0;
         }
+        System.out.println("Der Dealer ist nun " + getDealer().name);
+        setSmallBlindSpielerIndex();
+        setBigBlindSpielerIndex();
     }
     //dealer------------------------------------------------------------------------------------------------------------
     public Spieler getDealer(){
@@ -116,6 +120,7 @@ public class Tisch implements Runnable{
 
 
     //Spieler###########################################################################################################
+    //unnötig. Es gibt schon die Methode getCurrentSpieler()
     public Spieler currentSpieler(){
         return mitSpieler.get(currentSpielerIndex);
     }
@@ -125,11 +130,13 @@ public class Tisch implements Runnable{
         if(currentSpielerIndex >= mitSpieler.size()){
             currentSpielerIndex = 0;
         }
+        System.out.println("Spieler " + mitSpieler.get(currentSpielerIndex).name + "ist nun an der Reihe.");
         return mitSpieler.get(currentSpielerIndex);
     }
     //spieler-----------------------------------------------------------------------------------------------------------
     public void fuegeSpielerHinzu(Spieler s){
         mitSpieler.add(s);
+        System.out.println("Spieler " + s.name + " sitzt nun mit am Tisch.");
     }
     //spieler-----------------------------------------------------------------------------------------------------------
     public void entferneSpieler(Spieler s){
@@ -149,6 +156,7 @@ public class Tisch implements Runnable{
         }else{
             smallBlindSpielerIndex = dealerSpielerIndex;
         }
+        System.out.println("Der Small Blind ist nun " + mitSpieler.get(smallBlindSpielerIndex).name);
     }
     //spieler-----------------------------------------------------------------------------------------------------------
     public void setBigBlindSpielerIndex(){
@@ -164,6 +172,7 @@ public class Tisch implements Runnable{
                 bigBlindSpielerIndex = 0;
             }
         }
+        System.out.println("Der Big Blind ist nun " + mitSpieler.get(bigBlindSpielerIndex).name);
     }
     //spieler-----------------------------------------------------------------------------------------------------------
     public Spieler getCurrentSpieler(){
@@ -230,8 +239,10 @@ public class Tisch implements Runnable{
                     gibRaiseOrCall(raiseWieViel());
                     ende = true;
                     break;
-
             }
+        }
+        for (Spieler i: mitSpieler){
+            i.control =false;
         }
     }
     //spieler-----------------------------------------------------------------------------------------------------------
