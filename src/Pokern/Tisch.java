@@ -77,7 +77,6 @@ class Tisch implements Runnable{
                 rundeZDV();
                 nextSpieler();
             }
-
         }
         System.out.println("Spieler " + mitSpieler.get(0).getSpielerName() + " gewinnt");
         System.out.println("Das Spiel an diesem Tisch ist zu Ende.");
