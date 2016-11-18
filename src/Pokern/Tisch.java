@@ -20,6 +20,8 @@ class Tisch implements Runnable{
     private int bigBlindSpielerIndex;
     private int currentSpielerIndex;
 
+    public boolean raised = false;
+
 
     @Override public void run(){
         //Erstelle Spieler
@@ -66,9 +68,10 @@ class Tisch implements Runnable{
 
             //Wahlmöglichkeiten erste Runde
             while(!getCurrentSpieler().control || currentSpielerIndex != bigBlindSpielerIndex +1){
-                rundeEins();
+                wahl();
                 nextSpieler();
             }
+            raised = false;
             for (int i=0; i<3; i++){
                 gibTischKarte();
                 System.out.println("Karte " + i + ":\t " + tischKarten.get(i).getColor() + ", " + tischKarten.get(i).getValue());
@@ -169,10 +172,24 @@ class Tisch implements Runnable{
         return mitSpieler.get(currentSpielerIndex);
     }
     //spieler-----------------------------------------------------------------------------------------------------------
-    private void rundeEins(){
+    private void wahl(){
         boolean ende = false;
+        System.out.println("Wählen Sie zwischen folgenden Aktionen:");
+        if(raised) {
+            System.out.println("1: Call");
+        }
+        else{
+            System.out.println("1: Check");
+        }
+        System.out.println("2: Fold");
+        if(raised){
+            System.out.println("3: Raise");
+        }
+        else {
+            System.out.println("3: Bet");
+        }
         while(!ende) {
-            switch (getCurrentSpieler().spielerWahlRundeEins()) {
+            switch (getCurrentSpieler().spielerWahlRundeEins()) { //thread?
                 case -1:
                     getCurrentSpieler().istDabei = false;
                     ende = true;
@@ -193,6 +210,7 @@ class Tisch implements Runnable{
                     }
                     getCurrentSpieler().control=true;
                     gibRaiseOrCall(raiseWieViel());
+                    raised = true;
                     ende = true;
                     break;
 
