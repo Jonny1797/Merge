@@ -83,19 +83,15 @@ public class Benutzer implements Runnable {
                             tisch.setControl();
                             tisch.getCurrentSpieler().control = true;
 
-
-                            System.out.println("Um wie viel möchtest du raisen?");
+                            System.out.println("Was möchtest du setzen?");
                             wahl = t.nextInt();
-                            while (tisch.legalRaise(wahl)) {
-                                if (!tisch.legalRaise(wahl)) {
+                            while (!tisch.legalRaise(wahl)) {
                                     System.out.println("Der Wert ist leider nicht zulässig. Wählen Sie ein Vielfaches von " + tisch.smallBlindList[tisch.smallBlindListIndex] * 2 + "!");
-                                    System.out.println("Um wie viel möchtest du raisen?");
+                                    System.out.println("Was möchtest du setzen?");
                                     wahl = t.nextInt();
-                                } else {
-                                    tisch.gibRaiseOrCall(wahl);
-                                    tisch.raiseWert = wahl;
-                                }
                             }
+                            tisch.gibRaiseOrCall(wahl);
+                            tisch.raiseWert = wahl;
                             break;
                         default:
                             System.out.println("Die Wahl ist leider nicht zulässig.");

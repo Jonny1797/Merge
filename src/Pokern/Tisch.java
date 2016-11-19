@@ -446,7 +446,7 @@ public class Tisch implements Runnable{
 
     //PRÜFE#############################################################################################################
     public boolean legalRaise(long raise){
-        return raise > smallBlindList[smallBlindListIndex] && smallBlindList[smallBlindListIndex] % raise == 0;
+        return raise > smallBlindList[smallBlindListIndex]*2 || raiseWert > 0;
     }
     //PRÜFE_ENDE########################################################################################################
 }
