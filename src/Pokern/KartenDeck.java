@@ -22,7 +22,7 @@ public class KartenDeck {
         }
     }
 
-    public static Karte getKarte(){
+    public Karte getKarte(){
         Karte tempKarte = Deck.get(0);
         Deck.remove(0);
         return tempKarte;
