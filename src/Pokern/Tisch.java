@@ -110,8 +110,6 @@ public class Tisch implements Runnable{
     }
     //ENDE_DEALER#######################################################################################################
 
-
-
     //Spieler###########################################################################################################
     private void nextSpieler(){
         mitSpieler.get(currentSpielerIndex).setIstDran(false);
