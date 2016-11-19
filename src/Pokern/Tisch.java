@@ -15,6 +15,7 @@ class Tisch implements Runnable{
     private int smallBlindListIndex = 0;
     private int currentSmallBlindValue;
 
+
     private int dealerSpielerIndex;
     private int smallBlindSpielerIndex;
     private int bigBlindSpielerIndex;
