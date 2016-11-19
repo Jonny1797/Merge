@@ -5,7 +5,7 @@ import sun.security.provider.ConfigFile;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-class Tisch implements Runnable{
+public class Tisch implements Runnable{
     private ArrayList<Spieler> mitSpieler = new ArrayList<>();
     private ArrayList<Karte> tischKarten = new ArrayList<>();
 
@@ -22,6 +22,7 @@ class Tisch implements Runnable{
 
     public boolean raised = false;
 
+    //Hier habe ich voll was sinnvolles verändert!
 
     @Override public void run(){
         //Erstelle Spieler
