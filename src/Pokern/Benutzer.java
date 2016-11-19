@@ -10,7 +10,6 @@ public class Benutzer implements Runnable {
 
     private Spieler sp;
     private Tisch tisch;
-    private int wahl;
     Scanner s = new Scanner(System.in);
     Scanner t = new Scanner(System.in);
 
@@ -48,57 +47,63 @@ public class Benutzer implements Runnable {
                 }else{
                     System.out.println("...");
                 }
-                System.out.println("Wählen Sie zwischen folgenden Aktionen:");
-                if(tisch.raiseWert > 0) {
-                    System.out.println("1: Call");
-                }
-                else{
-                    System.out.println("1: Check");
-                }
-                System.out.println("2: Fold");
-                if(tisch.raiseWert > 0){
-                    System.out.println("3: Raise");
-                }
-                else {
-                    System.out.println("3: Bet");
-                }
-                wahl = s.nextInt();
-                switch (wahl) {
-                    //Der Spieler möchte Callen/ Checken
-                    case 1:
-                        if(tisch.raiseWert > 0){
-                            tisch.call();
-                        }
-                        else {
-                            tisch.getCurrentSpieler().control=true;
-                        }
-                        break;
-                    //Der Spieler möchte aussteigen
-                    case 2:
-                        tisch.getCurrentSpieler().istDabei = false;
-                        break;
-                    //Der Spieler möchte erhöhen
-                    case 3:
-                        //um zu wissen, wann die Runde zu ende ist: control der Spieler setzen
-                        tisch.setControl();
-                        tisch.getCurrentSpieler().control=true;
+                boolean ende;
+                int wahl;
+                do {
+                    System.out.println("Wählen Sie zwischen folgenden Aktionen:");
+                    if (tisch.raiseWert > 0) {
+                        System.out.println("1: Call");
+                    } else {
+                        System.out.println("1: Check");
+                    }
+                    System.out.println("2: Fold");
+                    if (tisch.raiseWert > 0) {
+                        System.out.println("3: Raise");
+                    } else {
+                        System.out.println("3: Bet");
+                    }
+                    wahl = s.nextInt();
+                    ende = true;
+                    switch (wahl) {
+                        //Der Spieler möchte Callen/ Checken
+                        case 1:
+                            if (tisch.raiseWert > 0) {
+                                tisch.call();
+                            } else {
+                                tisch.getCurrentSpieler().control = true;
+                            }
+                            break;
+                        //Der Spieler möchte aussteigen
+                        case 2:
+                            tisch.getCurrentSpieler().istDabei = false;
+                            break;
+                        //Der Spieler möchte erhöhen
+                        case 3:
+                            //um zu wissen, wann die Runde zu ende ist: control der Spieler setzen
+                            tisch.setControl();
+                            tisch.getCurrentSpieler().control = true;
 
 
-                        System.out.println("Um wie viel möchtest du raisen?");
-                        wahl = t.nextInt();
-                        while (tisch.legalRaise(wahl)) {
-                            if (!tisch.legalRaise(wahl)) {
-                                System.out.println("Der Wert ist leider nicht zulässig. Wählen Sie ein Vielfaches von " + tisch.smallBlindList[tisch.smallBlindListIndex]*2 + "!");
-                                System.out.println("Um wie viel möchtest du raisen?");
-                                wahl = t.nextInt();
+                            System.out.println("Um wie viel möchtest du raisen?");
+                            wahl = t.nextInt();
+                            while (tisch.legalRaise(wahl)) {
+                                if (!tisch.legalRaise(wahl)) {
+                                    System.out.println("Der Wert ist leider nicht zulässig. Wählen Sie ein Vielfaches von " + tisch.smallBlindList[tisch.smallBlindListIndex] * 2 + "!");
+                                    System.out.println("Um wie viel möchtest du raisen?");
+                                    wahl = t.nextInt();
+                                } else {
+                                    tisch.gibRaiseOrCall(wahl);
+                                    tisch.raiseWert = wahl;
+                                }
                             }
-                            else{
-                                tisch.gibRaiseOrCall(wahl);
-                                tisch.raiseWert = wahl;
-                            }
-                        }
-                        break;
+                            break;
+                        default:
+                            System.out.println("Die Wahl ist leider nicht zulässig.");
+                            ende = false;
+                            break;
+                    }
                 }
+                while(!ende);
             }
         }
     }
