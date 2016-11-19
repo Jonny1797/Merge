@@ -9,7 +9,7 @@ public class Spieler {
     boolean isAllIn = false;
 	boolean istDabei = true;
 	boolean control = false;
-	boolean istDrann = false;
+	boolean istDran = false;
 	ArrayList<Karte> handKarten = new ArrayList<>();
 
 	public Spieler(String Name/*, long Geld*/){

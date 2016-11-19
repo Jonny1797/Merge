@@ -11,12 +11,12 @@ import java.util.Scanner;
 
 public class Tisch implements Runnable{
     private ArrayList<Spieler> mitSpieler = new ArrayList<>();
-    private ArrayList<Karte> tischKarten = new ArrayList<>();
+    ArrayList<Karte> tischKarten = new ArrayList<>();
 
     private long startGeld = 5000;
 
-    private int[] smallBlindList = {100, 200, 400, 500, 1000, 2000, 4000, 5000};
-    private int smallBlindListIndex = 0;
+    public int[] smallBlindList = {100, 200, 400, 500, 1000, 2000, 4000, 5000};
+    public int smallBlindListIndex = 0;
     private int currentSmallBlindValue;
 
     private int dealerSpielerIndex;
@@ -24,7 +24,7 @@ public class Tisch implements Runnable{
     private int bigBlindSpielerIndex;
     private int currentSpielerIndex;
 
-    public boolean raised = false;
+    public long raiseWert = 0;
 
     //Hier habe ich voll was sinnvolles verändert!
 
@@ -60,7 +60,7 @@ public class Tisch implements Runnable{
             //Wer ist Small und Big Blind und wer ist an der Reihe?
             setSmallBlindSpielerIndex();
             setBigBlindSpielerIndex();
-            currentSpielerIndex = nextSpieler(bigBlindSpielerIndex);
+            nextSpieler(bigBlindSpielerIndex);
 
             //SmallBlindValue wird gelegt
             gibSmallBlind();
@@ -76,7 +76,7 @@ public class Tisch implements Runnable{
                 wahl();
                 nextSpieler();
             }
-            raised = false;
+
             for (int i=0; i<3; i++){
                 gibTischKarte(deck);
                 System.out.println("Karte " + i + ":\t " + tischKarten.get(i).getColor() + ", " + tischKarten.get(i).getValue());
@@ -116,20 +116,23 @@ public class Tisch implements Runnable{
 
     //Spieler###########################################################################################################
     private void nextSpieler(){
+        mitSpieler.get(currentSpielerIndex).istDran = false;
         currentSpielerIndex++;
         if(currentSpielerIndex >= mitSpieler.size()){
             currentSpielerIndex = 0;
         }
         System.out.println("Spieler " + mitSpieler.get(currentSpielerIndex).name + "ist nun an der Reihe.");
+        mitSpieler.get(currentSpielerIndex).istDran = true;
     }
     //spieler-----------------------------------------------------------------------------------------------------------
-    private int nextSpieler(int spieler){
+    private void nextSpieler(int spieler){
+        mitSpieler.get(spieler).istDran = false;
         currentSpielerIndex = spieler + 1;
         if(currentSpielerIndex >= mitSpieler.size()){
             currentSpielerIndex = 0;
         }
         System.out.println("Spieler " + mitSpieler.get(currentSpielerIndex).name + "ist nun an der Reihe.");
-        return currentSpielerIndex;
+        mitSpieler.get(currentSpielerIndex).istDran = true;
     }
     //spieler-----------------------------------------------------------------------------------------------------------
     private void fuegeSpielerHinzu(Spieler s){
@@ -173,12 +176,12 @@ public class Tisch implements Runnable{
         System.out.println("Der Big Blind ist nun " + mitSpieler.get(bigBlindSpielerIndex).name);
     }
     //spieler-----------------------------------------------------------------------------------------------------------
-    private Spieler getCurrentSpieler(){
+    public Spieler getCurrentSpieler(){
         return mitSpieler.get(currentSpielerIndex);
     }
     //spieler-----------------------------------------------------------------------------------------------------------
     private void wahl(){
-        boolean ende = false;
+        /*boolean ende = false;
         System.out.println("Wählen Sie zwischen folgenden Aktionen:");
         if(raised) {
             System.out.println("1: Call");
@@ -223,7 +226,7 @@ public class Tisch implements Runnable{
         }
         for (Spieler i: mitSpieler){
             i.control =false;
-        }
+        }*/
     }
     //spieler-----------------------------------------------------------------------------------------------------------
     private void rundeZDV() {
@@ -249,7 +252,7 @@ public class Tisch implements Runnable{
                         i.control =false;
                     }
                     getCurrentSpieler().control=true;
-                    gibRaiseOrCall(raiseWieViel());
+                    //gibRaiseOrCall(raiseWieViel());
                     ende = true;
                     break;
             }
@@ -259,9 +262,15 @@ public class Tisch implements Runnable{
         }
     }
     //spieler-----------------------------------------------------------------------------------------------------------
-    private void call() {
+    public void call() {
         //Schau selbst, wie viel gesetzt werden muss
         gibRaiseOrCall(1);
+    }
+    //spieler-----------------------------------------------------------------------------------------------------------
+    public void setControl(){
+        for (Spieler i : mitSpieler){
+            i.control =false;
+        }
     }
     //END_SPIELER#######################################################################################################
 
@@ -393,7 +402,7 @@ public class Tisch implements Runnable{
         //}
     }
     //------------------------------------------------------------------------------------------------------------------
-    private long raiseWieViel(){
+    /*private long raiseWieViel(){
         long wert;
         System.out.println("Um wie viel möchtest du raisen?");
         Scanner s = new Scanner(System.in);
@@ -401,9 +410,9 @@ public class Tisch implements Runnable{
             System.out.println("Sie haben nicht genügend Geld, oder der Wert ist leider nicht zulässig. Wählen Sie ein Vielfaches von " + smallBlindList[smallBlindListIndex]*2);
         }
         return wert;
-    }
+    }*/
     //------------------------------------------------------------------------------------------------------------------
-    private void gibRaiseOrCall(long i){
+    public void gibRaiseOrCall(long i){
         //this.pod += i; //?????????????????????????????????????????????????????????????????????????????????????????????
     }
     //ENDE_GELD#########################################################################################################
@@ -436,7 +445,7 @@ public class Tisch implements Runnable{
     //ENDE_KARTEN#######################################################################################################
 
     //PRÜFE#############################################################################################################
-    private boolean legalRaise(long raise){
+    public boolean legalRaise(long raise){
         return raise > smallBlindList[smallBlindListIndex] && smallBlindList[smallBlindListIndex] % raise == 0;
     }
     //PRÜFE_ENDE########################################################################################################
