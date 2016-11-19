@@ -20,6 +20,7 @@ public class Tisch implements Runnable{
     int bigBlindSpielerIndex;
     int currentSpielerIndex;
 
+    //DD
 
     @Override public void run(){
         //Erstelle Spieler
@@ -62,7 +63,7 @@ public class Tisch implements Runnable{
             gibBigBlind();
 
             //Die Spieler bekommen Karten
-            gibSpielerKarten();
+            gibSpielerKarten(deck);
 
             //Wahlmöglichkeiten erste Runde
             while(!getCurrentSpieler().control || currentSpielerIndex != bigBlindSpielerIndex +1){
@@ -70,7 +71,7 @@ public class Tisch implements Runnable{
                 nextSpieler();
             }
             for (int i=0; i<3; i++){
-                gibTischKarte();
+                gibTischKarte(deck);
                 System.out.println("Karte " + i + ":\t " + tischKarten.get(i).getColor() + ", " + tischKarten.get(i).getValue());
             }
             while (true){
@@ -369,15 +370,15 @@ public class Tisch implements Runnable{
     //ENDE_BLINDS#######################################################################################################
 
     //KARTEN############################################################################################################
-    public void gibSpielerKarten (){
+    public void gibSpielerKarten (KartenDeck deck){
         for(Spieler i:mitSpieler) {
             for(int j=0; j < 2; j++)
-                i.bekommeKarte(KartenDeck.getKarte());
+                i.bekommeKarte(deck.getKarte());
         }
     }
     //------------------------------------------------------------------------------------------------------------------
-    private void gibTischKarte(){
-        tischKarten.add(KartenDeck.getKarte());
+    private void gibTischKarte(KartenDeck deck){
+        tischKarten.add(deck.getKarte());
     }
     //ENDE_KARTEN#######################################################################################################
 
