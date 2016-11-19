@@ -124,13 +124,13 @@ public class Tisch implements Runnable{
     }
     //spieler-----------------------------------------------------------------------------------------------------------
     private void nextSpieler(int spieler){
-        mitSpieler.get(spieler).istDran = false;
+        mitSpieler.get(spieler).setIstDran(false);
         currentSpielerIndex = spieler + 1;
         if(currentSpielerIndex >= mitSpieler.size()){
             currentSpielerIndex = 0;
         }
         System.out.println("Spieler " + mitSpieler.get(currentSpielerIndex).name + "ist nun an der Reihe.");
-        mitSpieler.get(currentSpielerIndex).istDran = true;
+        mitSpieler.get(currentSpielerIndex).setIstDran(false);
     }
     //spieler-----------------------------------------------------------------------------------------------------------
     private void fuegeSpielerHinzu(Spieler s){
