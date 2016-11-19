@@ -1,26 +1,31 @@
 package Pokern;
 
+import handChecker.HandValue;
+import handChecker.PokerCard;
 import sun.security.provider.ConfigFile;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Scanner;
+import handChecker.HandChecker;
 
-class Tisch implements Runnable{
-    private ArrayList<Spieler> mitSpieler = new ArrayList<>();
-    private ArrayList<Karte> tischKarten = new ArrayList<>();
+public class Tisch implements Runnable{
+    ArrayList<Spieler> mitSpieler = new ArrayList<>();
+    ArrayList<Karte> tischKarten = new ArrayList<>();
 
-    private long startGeld = 5000;
+    long startGeld = 5000;
 
-    private int[] smallBlindList = {100, 200, 400, 500, 1000, 2000, 4000, 5000};
-    private int smallBlindListIndex = 0;
-    private int currentSmallBlindValue;
+    int[] smallBlindList = {100, 200, 400, 500, 1000, 2000, 4000, 5000};
+    int smallBlindListIndex = 0;
+    int currentSmallBlindValue;
 
-    private int dealerSpielerIndex;
-    private int smallBlindSpielerIndex;
-    private int bigBlindSpielerIndex;
-    private int currentSpielerIndex;
+    int dealerSpielerIndex;
+    int smallBlindSpielerIndex;
+    int bigBlindSpielerIndex;
+    int currentSpielerIndex;
 
-    public boolean raised = false;
+    long currentRise;
 
 
     @Override public void run(){
@@ -52,10 +57,10 @@ class Tisch implements Runnable{
         setDealer();
 
         while(mitSpieler.size() > 1){
-            //Wer ist Small und Big Blind und wer ist an der Reihe?
+            //Wer ist Small und BigBlind und wer ist an der Reihe?
             setSmallBlindSpielerIndex();
             setBigBlindSpielerIndex();
-            currentSpielerIndex = nextSpieler(bigBlindSpielerIndex);
+            nextSpieler();
 
             //SmallBlindValue wird gelegt
             gibSmallBlind();
@@ -64,35 +69,47 @@ class Tisch implements Runnable{
             gibBigBlind();
 
             //Die Spieler bekommen Karten
-            gibSpielerKarten();
+            gibSpielerKarten(deck);
 
             //Wahlmöglichkeiten erste Runde
             while(!getCurrentSpieler().control || currentSpielerIndex != bigBlindSpielerIndex +1){
-                wahl();
+                rundeEins();
                 nextSpieler();
             }
-            raised = false;
             for (int i=0; i<3; i++){
-                gibTischKarte();
+                gibTischKarte(deck);
                 System.out.println("Karte " + i + ":\t " + tischKarten.get(i).getColor() + ", " + tischKarten.get(i).getValue());
             }
             while (true){
                 rundeZDV();
                 nextSpieler();
             }
+
         }
         System.out.println("Spieler " + mitSpieler.get(0).getSpielerName() + " gewinnt");
-        System.out.println("Das Spiel an diesem Tisch ist zu Ende.");
+//		//what ever
+//		if(tisch.wieVielerSpieler() > 2){
+//			//entweder definiert man einfach die Blinds über den Dealer
+//			//oder wir machen dafür auch noch Variablen!?
+//		}else if (tisch.wieVielerSpieler() == 2){
+//			//tisch.nextDealer().geld = tisch.bBlindValue /2;
+//			//Die Spieler bekommen Karten
+//			tisch.givePlayerCards();
+//		}else{
+//			//Letzter Spieler hat gewonnen!!!
+//
+//		}
+        System.out.println("Ende vom Tisch");
     }
 
 
     //DEALER############################################################################################################
-    private void setDealer(){
+    public void setDealer(){
         dealerSpielerIndex = (int) (Math.random() * (mitSpieler.size()-1));
         System.out.println("Der Dealer ist nun " + getDealer().name);
     }
     //dealer------------------------------------------------------------------------------------------------------------
-    private void setNextDealer(){
+    public void setNextDealer(){
        dealerSpielerIndex++;
         if(dealerSpielerIndex >= mitSpieler.size()){
             dealerSpielerIndex = 0;
@@ -102,7 +119,7 @@ class Tisch implements Runnable{
         setBigBlindSpielerIndex();
     }
     //dealer------------------------------------------------------------------------------------------------------------
-    private Spieler getDealer(){
+    public Spieler getDealer(){
         return mitSpieler.get(dealerSpielerIndex);
     }
     //ENDE_DEALER#######################################################################################################
@@ -110,37 +127,34 @@ class Tisch implements Runnable{
 
 
     //Spieler###########################################################################################################
-    private void nextSpieler(){
+    //unnötig. Es gibt schon die Methode getCurrentSpieler()
+    public Spieler currentSpieler(){
+        return mitSpieler.get(currentSpielerIndex);
+    }
+    //spieler-----------------------------------------------------------------------------------------------------------
+    public Spieler nextSpieler(){
         currentSpielerIndex++;
         if(currentSpielerIndex >= mitSpieler.size()){
             currentSpielerIndex = 0;
         }
         System.out.println("Spieler " + mitSpieler.get(currentSpielerIndex).name + "ist nun an der Reihe.");
+        return mitSpieler.get(currentSpielerIndex);
     }
     //spieler-----------------------------------------------------------------------------------------------------------
-    private int nextSpieler(int spieler){
-        currentSpielerIndex = spieler + 1;
-        if(currentSpielerIndex >= mitSpieler.size()){
-            currentSpielerIndex = 0;
-        }
-        System.out.println("Spieler " + mitSpieler.get(currentSpielerIndex).name + "ist nun an der Reihe.");
-        return currentSpielerIndex;
-    }
-    //spieler-----------------------------------------------------------------------------------------------------------
-    private void fuegeSpielerHinzu(Spieler s){
+    public void fuegeSpielerHinzu(Spieler s){
         mitSpieler.add(s);
         System.out.println("Spieler " + s.name + " sitzt nun mit am Tisch.");
     }
     //spieler-----------------------------------------------------------------------------------------------------------
-    private void entferneSpieler(Spieler s){
+    public void entferneSpieler(Spieler s){
         mitSpieler.remove(s);
     }
     //spieler-----------------------------------------------------------------------------------------------------------
-    private int wieVielerSpieler(){
+    public int wieVielerSpieler(){
         return mitSpieler.size();
     }
     //spieler-----------------------------------------------------------------------------------------------------------
-    private void setSmallBlindSpielerIndex(){
+    public void setSmallBlindSpielerIndex(){
         if(mitSpieler.size() > 2){
             smallBlindSpielerIndex = dealerSpielerIndex + 1;
             if(smallBlindSpielerIndex >= mitSpieler.size()){
@@ -152,7 +166,7 @@ class Tisch implements Runnable{
         System.out.println("Der Small Blind ist nun " + mitSpieler.get(smallBlindSpielerIndex).name);
     }
     //spieler-----------------------------------------------------------------------------------------------------------
-    private void setBigBlindSpielerIndex(){
+    public void setBigBlindSpielerIndex(){
         if(mitSpieler.size() > 2){
             bigBlindSpielerIndex = dealerSpielerIndex + 2;
             if(bigBlindSpielerIndex >= mitSpieler.size()){
@@ -168,28 +182,14 @@ class Tisch implements Runnable{
         System.out.println("Der Big Blind ist nun " + mitSpieler.get(bigBlindSpielerIndex).name);
     }
     //spieler-----------------------------------------------------------------------------------------------------------
-    private Spieler getCurrentSpieler(){
+    public Spieler getCurrentSpieler(){
         return mitSpieler.get(currentSpielerIndex);
     }
     //spieler-----------------------------------------------------------------------------------------------------------
-    private void wahl(){
+    public void rundeEins(){
         boolean ende = false;
-        System.out.println("Wählen Sie zwischen folgenden Aktionen:");
-        if(raised) {
-            System.out.println("1: Call");
-        }
-        else{
-            System.out.println("1: Check");
-        }
-        System.out.println("2: Fold");
-        if(raised){
-            System.out.println("3: Raise");
-        }
-        else {
-            System.out.println("3: Bet");
-        }
         while(!ende) {
-            switch (getCurrentSpieler().spielerWahlRundeEins()) { //thread?
+            switch (getCurrentSpieler().spielerWahlRundeEins()) {
                 case -1:
                     getCurrentSpieler().istDabei = false;
                     ende = true;
@@ -210,7 +210,6 @@ class Tisch implements Runnable{
                     }
                     getCurrentSpieler().control=true;
                     gibRaiseOrCall(raiseWieViel());
-                    raised = true;
                     ende = true;
                     break;
 
@@ -261,17 +260,17 @@ class Tisch implements Runnable{
     //END_SPIELER#######################################################################################################
 
     //GELD##############################################################################################################
-    private void gibSpielerStartGeld(long geld){
+    public void gibSpielerStartGeld(long geld){
         for (Spieler i : mitSpieler){
             i.setGeld(geld);
         }
     }
     //------------------------------------------------------------------------------------------------------------------
-    private long getStartGeld(){
+    public long getStartGeld(){
         return startGeld;
     }
     //------------------------------------------------------------------------------------------------------------------
-    private void inDenPodEinzahlen(Spieler s, long geld){
+    public void inDenPodEinzahlen(Spieler s, long geld){
         if(s.wieVielGeld() < geld){
             s.addZumPod(s.wieVielGeld());
             s.verliereGeld(s.wieVielGeld());
@@ -282,8 +281,48 @@ class Tisch implements Runnable{
         }
     }
     //------------------------------------------------------------------------------------------------------------------
-    private void podAuszahlen(Spieler gewinner){
-        long hauptPodValue = gewinner.getPod();
+    public void podAuszahlen(){
+
+        ArrayList<Spieler> mitSpielerHandAmPod = new ArrayList<>();
+
+        for(Spieler spieler:mitSpieler){
+            if(spieler.istDabei){
+                mitSpielerHandAmPod.add(spieler);
+            }
+        }
+
+        List<PokerCard> Karten1 = null;
+        List<PokerCard> Karten2 = null;
+        Karten1.add(mitSpielerHandAmPod.get(0).handKarten.get(0));
+        Karten1.add(mitSpielerHandAmPod.get(0).handKarten.get(1));
+        Karten2.add(mitSpielerHandAmPod.get(1).handKarten.get(0));
+        Karten2.add(mitSpielerHandAmPod.get(1).handKarten.get(1));
+        for(int i = 0; i < tischKarten.size(); i++){
+            Karten1.add(tischKarten.get(i));
+            Karten2.add(tischKarten.get(i));
+        }
+
+        int gewinnerIndex; //Aus mitSpielerHandAmPod
+
+        HandChecker hc = new HandChecker();
+
+        for(int spielerIndex = 0; spielerIndex < mitSpielerHandAmPod.size(); spielerIndex++){
+            if (hc.check(Karten1).compareTo(hc.check(Karten2)) > 0){
+
+            }
+        }
+        //dsadfsasfasfasfasffas
+
+
+
+
+
+        HandValue handValue1 = hc.check(testKarten1);
+        HandValue handValue2 = hc.check(testKarten2);
+        double i = handValue1.compareTo(handValue2);
+        //So In Etwa
+
+        /*long hauptPodValue = gewinner.getPod();
         for(Spieler s:mitSpieler){
             if(hauptPodValue > s.getPod()){
                 gewinner.bekommeGeld(s.getPod());
@@ -314,11 +353,13 @@ class Tisch implements Runnable{
                     s.verminderePod(minPod);
                 }
             }
-        }
+        }*/
 
     }
     //------------------------------------------------------------------------------------------------------------------
-    private void gibSmallBlind(){
+    public void gibSmallBlind(){
+
+
 
         //if(mitSpieler.get(smallBlindSpielerIndex).wieVielGeld() < getSmallBlindValue()){
         //    long allInValue = mitSpieler.get(smallBlindSpielerIndex).wieVielGeld();
@@ -332,7 +373,7 @@ class Tisch implements Runnable{
         //}
     }
     //------------------------------------------------------------------------------------------------------------------
-    private void gibBigBlind(){
+    public void gibBigBlind(){
         //if(mitSpieler.get(bigBlindSpielerIndex).wieVielGeld() < getSmallBlindValue()){
         //    long allInValue = 2 * mitSpieler.get(bigBlindSpielerIndex).wieVielGeld();
         //    mitSpieler.get(bigBlindSpielerIndex).setAllInZuIstAllIn();                                                     //Spieler wird All-in gesetzt
@@ -345,7 +386,7 @@ class Tisch implements Runnable{
         //}
     }
     //------------------------------------------------------------------------------------------------------------------
-    private long raiseWieViel(){
+    public long raiseWieViel(){
         long wert;
         System.out.println("Um wie viel möchtest du raisen?");
         Scanner s = new Scanner(System.in);
@@ -355,13 +396,13 @@ class Tisch implements Runnable{
         return wert;
     }
     //------------------------------------------------------------------------------------------------------------------
-    private void gibRaiseOrCall(long i){
+    public void gibRaiseOrCall(long i){
         //this.pod += i; //?????????????????????????????????????????????????????????????????????????????????????????????
     }
     //ENDE_GELD#########################################################################################################
 
     //BLINDS############################################################################################################
-    private int getSmallBlindValue(){
+    public int getSmallBlindValue(){
         return smallBlindList[smallBlindListIndex];
     }
     //blind-------------------------------------------------------------------------------------------------------------
@@ -375,15 +416,15 @@ class Tisch implements Runnable{
     //ENDE_BLINDS#######################################################################################################
 
     //KARTEN############################################################################################################
-    private void gibSpielerKarten(){
+    public void gibSpielerKarten (KartenDeck deck){
         for(Spieler i:mitSpieler) {
             for(int j=0; j < 2; j++)
-                i.bekommeKarte(KartenDeck.getKarte());
+                i.bekommeKarte(deck.getKarte());
         }
     }
     //------------------------------------------------------------------------------------------------------------------
-    private void gibTischKarte(){
-        tischKarten.add(KartenDeck.getKarte());
+    private void gibTischKarte(KartenDeck deck){
+        tischKarten.add(deck.getKarte());
     }
     //ENDE_KARTEN#######################################################################################################
 
