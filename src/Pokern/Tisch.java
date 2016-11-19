@@ -70,7 +70,7 @@ public class Tisch implements Runnable{
             gibSpielerKarten(deck);
 
             //Wahlmöglichkeiten erste Runde
-            while(!getCurrentSpieler().control || currentSpielerIndex != bigBlindSpielerIndex +1){
+            while(!getCurrentSpieler().getControl() || currentSpielerIndex != bigBlindSpielerIndex +1){
                 wahl();
                 nextSpieler();
             }
@@ -114,13 +114,13 @@ public class Tisch implements Runnable{
 
     //Spieler###########################################################################################################
     private void nextSpieler(){
-        mitSpieler.get(currentSpielerIndex).istDran = false;
+        mitSpieler.get(currentSpielerIndex).setIstDran(false);
         currentSpielerIndex++;
         if(currentSpielerIndex >= mitSpieler.size()){
             currentSpielerIndex = 0;
         }
         System.out.println("Spieler " + mitSpieler.get(currentSpielerIndex).name + "ist nun an der Reihe.");
-        mitSpieler.get(currentSpielerIndex).istDran = true;
+        mitSpieler.get(currentSpielerIndex).setIstDran(true);
     }
     //spieler-----------------------------------------------------------------------------------------------------------
     private void nextSpieler(int spieler){
@@ -232,42 +232,42 @@ public class Tisch implements Runnable{
         while(!ende) {
             switch (getCurrentSpieler().spielerWahlRundeZDV()) {
                 case -1:
-                    getCurrentSpieler().istDabei = false;
+                    getCurrentSpieler().setIstDabei(false);
                     ende = true;
                     break;
                 case 0:
-                    if(mitSpieler.get(currentSpielerIndex-1).control){
+                    if(mitSpieler.get(currentSpielerIndex-1).getControl()){
                         System.out.println("Das geht nicht.");
                     }
                     else {
                         call();
                         ende = true;
-                        getCurrentSpieler().control=true;
+                        getCurrentSpieler().setControl(true);
                     }
                     break;
                 case 1:
                     for (Spieler i: mitSpieler){
-                        i.control =false;
+                        i.setControl(false);
                     }
-                    getCurrentSpieler().control=true;
+                    getCurrentSpieler().setControl(true);
                     //gibRaiseOrCall(raiseWieViel());
                     ende = true;
                     break;
             }
         }
         for (Spieler i: mitSpieler){
-            i.control =false;
+            i.setControl(false);
         }
     }
     //spieler-----------------------------------------------------------------------------------------------------------
     public void call() {
         //Schau selbst, wie viel gesetzt werden muss
-        gibRaiseOrCall(raiseWert - getCurrentSpieler().currentpod);
+        gibRaiseOrCall(raiseWert - getCurrentSpieler().getCurrentPod());
     }
     //spieler-----------------------------------------------------------------------------------------------------------
     public void setControl(){
         for (Spieler i : mitSpieler){
-            i.control =false;
+            i.setControl(false);
         }
     }
     //END_SPIELER#######################################################################################################

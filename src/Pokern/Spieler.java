@@ -4,14 +4,14 @@ import java.util.Scanner;
 
 public class Spieler {
 	String name;
-	long geld;
-    long pod;
-	int currentpod;
-    boolean isAllIn = false;
-	boolean istDabei = true;
-	boolean control = false;
-	boolean istDran = false;
-	ArrayList<Karte> handKarten = new ArrayList<>();
+	private long geld;
+    private long pod;
+	private int currentPod;
+    private boolean isAllIn = false;
+	private boolean istDabei = true;
+	private boolean control = false;
+	private boolean istDran = false;
+	private ArrayList<Karte> handKarten = new ArrayList<>();
 
 	public Spieler(String Name/*, long Geld*/){
 		this.name = Name;
@@ -21,6 +21,10 @@ public class Spieler {
 	//KARTEN############################################################################################################
 	public void bekommeKarte(Karte karte){
 		handKarten.add(karte);
+	}
+	//karten------------------------------------------------------------------------------------------------------------
+	public ArrayList<Karte> getHandKarten(){
+		return handKarten;
 	}
 	//ENDE_KARTEN#######################################################################################################
 
@@ -74,6 +78,34 @@ public class Spieler {
 	}
 	//ENDE_SPIELER######################################################################################################
 
+
+	public boolean getControl(){
+		return this.control;
+	}
+
+	public void setControl(boolean control){
+		this.control = control;
+	}
+
+	public boolean getIstDran(){
+		return this.istDran;
+	}
+
+	public void setIstDran(boolean istDran){
+		this.istDran = istDran;
+	}
+
+	public boolean getIstDabei(){
+		return istDabei;
+	}
+
+	public void setIstDabei(boolean istDabei){
+		this.istDabei = istDabei;
+	}
+
+	public int getCurrentPod(){
+		return currentPod;
+	}
 	//GELD##############################################################################################################
 	public void setGeld(long geld){
 		this.geld = geld;

@@ -21,22 +21,22 @@ public class Benutzer implements Runnable {
 
     @Override
     public void run() {
-        while(sp.istDabei){
+        while(sp.getIstDabei()){
             try {
                 wait(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            if(sp.istDran){
+            if(sp.getIstDran()){
                 System.out.println("/n/n/n/n/n/n/n/n/n/n");
                 System.out.println("Spieler: " + sp.name);
                 System.out.println("Geld: " + sp.wieVielGeld());
-                System.out.println("Geld gesetzt: " + sp.pod);
+                System.out.println("Geld gesetzt: " + sp.getPod());
                 //System.out.println("Pod: " + sp.gesamtPod);
                 System.out.print("Handkarten: ");
-                if(sp.handKarten.size() == 2){
-                    System.out.print("" + sp.handKarten.get(0).getColor() + sp.handKarten.get(0).getColor());
-                    System.out.println("    " + sp.handKarten.get(1).getColor() + sp.handKarten.get(1).getValue());
+                if(sp.getHandKarten().size() == 2){
+                    System.out.print("" + sp.getHandKarten().get(0).getColor() + sp.getHandKarten().get(0).getColor());
+                    System.out.println("    " + sp.getHandKarten().get(1).getColor() + sp.getHandKarten().get(1).getValue());
                 }else{
                     System.out.println("Es fehlen noch Karten");
                 }
@@ -70,18 +70,18 @@ public class Benutzer implements Runnable {
                             if (tisch.raiseWert > 0) {
                                 tisch.call();
                             } else {
-                                tisch.getCurrentSpieler().control = true;
+                                tisch.getCurrentSpieler().setControl(true);
                             }
                             break;
                         //Der Spieler möchte aussteigen
                         case -2:
-                            tisch.getCurrentSpieler().istDabei = false;
+                            tisch.getCurrentSpieler().setIstDabei(false);
                             break;
                         //Der Spieler möchte erhöhen
                         case -3:
                             //um zu wissen, wann die Runde zu ende ist: control der Spieler setzen
                             tisch.setControl();
-                            tisch.getCurrentSpieler().control = true;
+                            tisch.getCurrentSpieler().setControl(true);
 
                             System.out.println("Was möchtest du setzen?");
                             wahl = t.nextInt();
