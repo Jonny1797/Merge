@@ -11,21 +11,21 @@ import java.util.Scanner;
 import handChecker.HandChecker;
 
 public class Tisch implements Runnable{
-    ArrayList<Spieler> mitSpieler = new ArrayList<>();
-    ArrayList<Karte> tischKarten = new ArrayList<>();
+    private ArrayList<Spieler> mitSpieler = new ArrayList<>();
+    private ArrayList<Karte> tischKarten = new ArrayList<>();
 
-    long startGeld = 5000;
+    private long startGeld = 5000;
 
-    int[] smallBlindList = {100, 200, 400, 500, 1000, 2000, 4000, 5000};
-    int smallBlindListIndex = 0;
-    int currentSmallBlindValue;
+    private int[] smallBlindList = {100, 200, 400, 500, 1000, 2000, 4000, 5000};
+    private int smallBlindListIndex = 0;
+    private int currentSmallBlindValue;
 
-    int dealerSpielerIndex;
-    int smallBlindSpielerIndex;
-    int bigBlindSpielerIndex;
-    int currentSpielerIndex;
+    private int dealerSpielerIndex;
+    private int smallBlindSpielerIndex;
+    private int bigBlindSpielerIndex;
+    private int currentSpielerIndex;
 
-    long currentRise;
+    public boolean raised = false;
 
 
     @Override public void run(){
