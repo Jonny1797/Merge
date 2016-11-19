@@ -1,9 +1,14 @@
 package Pokern;
 
+import handChecker.HandValue;
+import handChecker.PokerCard;
 import sun.security.provider.ConfigFile;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Scanner;
+import handChecker.HandChecker;
 
 public class Tisch implements Runnable{
     ArrayList<Spieler> mitSpieler = new ArrayList<>();
@@ -20,7 +25,8 @@ public class Tisch implements Runnable{
     int bigBlindSpielerIndex;
     int currentSpielerIndex;
 
-    //DD
+    long currentRise;
+
 
     @Override public void run(){
         //Erstelle Spieler
@@ -275,8 +281,48 @@ public class Tisch implements Runnable{
         }
     }
     //------------------------------------------------------------------------------------------------------------------
-    public void podAuszahlen(Spieler gewinner){
-        long hauptPodValue = gewinner.getPod();
+    public void podAuszahlen(){
+
+        ArrayList<Spieler> mitSpielerHandAmPod = new ArrayList<>();
+
+        for(Spieler spieler:mitSpieler){
+            if(spieler.istDabei){
+                mitSpielerHandAmPod.add(spieler);
+            }
+        }
+
+        List<PokerCard> Karten1 = null;
+        List<PokerCard> Karten2 = null;
+        Karten1.add(mitSpielerHandAmPod.get(0).handKarten.get(0));
+        Karten1.add(mitSpielerHandAmPod.get(0).handKarten.get(1));
+        Karten2.add(mitSpielerHandAmPod.get(1).handKarten.get(0));
+        Karten2.add(mitSpielerHandAmPod.get(1).handKarten.get(1));
+        for(int i = 0; i < tischKarten.size(); i++){
+            Karten1.add(tischKarten.get(i));
+            Karten2.add(tischKarten.get(i));
+        }
+
+        int gewinnerIndex; //Aus mitSpielerHandAmPod
+
+        HandChecker hc = new HandChecker();
+
+        for(int spielerIndex = 0; spielerIndex < mitSpielerHandAmPod.size(); spielerIndex++){
+            if (hc.check(Karten1).compareTo(hc.check(Karten2)) > 0){
+
+            }
+        }
+        //dsadfsasfasfasfasffas
+
+
+
+
+
+        HandValue handValue1 = hc.check(testKarten1);
+        HandValue handValue2 = hc.check(testKarten2);
+        double i = handValue1.compareTo(handValue2);
+        //So In Etwa
+
+        /*long hauptPodValue = gewinner.getPod();
         for(Spieler s:mitSpieler){
             if(hauptPodValue > s.getPod()){
                 gewinner.bekommeGeld(s.getPod());
@@ -307,7 +353,7 @@ public class Tisch implements Runnable{
                     s.verminderePod(minPod);
                 }
             }
-        }
+        }*/
 
     }
     //------------------------------------------------------------------------------------------------------------------
