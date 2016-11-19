@@ -6,6 +6,7 @@ public class Spieler {
 	String name;
 	long geld;
     long pod;
+	int currentpod;
     boolean isAllIn = false;
 	boolean istDabei = true;
 	boolean control = false;

@@ -26,8 +26,6 @@ public class Tisch implements Runnable{
 
     public long raiseWert = 0;
 
-    //Hier habe ich voll was sinnvolles verändert!
-
     @Override public void run(){
         //Erstelle Spieler
         Spieler Eberhart = new Spieler("Eberhard");
@@ -264,7 +262,7 @@ public class Tisch implements Runnable{
     //spieler-----------------------------------------------------------------------------------------------------------
     public void call() {
         //Schau selbst, wie viel gesetzt werden muss
-        gibRaiseOrCall(1);
+        gibRaiseOrCall(raiseWert - getCurrentSpieler().currentpod);
     }
     //spieler-----------------------------------------------------------------------------------------------------------
     public void setControl(){

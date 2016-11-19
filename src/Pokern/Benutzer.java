@@ -10,6 +10,7 @@ public class Benutzer implements Runnable {
 
     private Spieler sp;
     private Tisch tisch;
+    public int wahl;
     Scanner s = new Scanner(System.in);
     Scanner t = new Scanner(System.in);
 
@@ -48,7 +49,6 @@ public class Benutzer implements Runnable {
                     System.out.println("...");
                 }
                 boolean ende;
-                int wahl;
                 do {
                     System.out.println("Wählen Sie zwischen folgenden Aktionen:");
                     if (tisch.raiseWert > 0) {
@@ -62,11 +62,11 @@ public class Benutzer implements Runnable {
                     } else {
                         System.out.println("3: Bet");
                     }
-                    wahl = s.nextInt();
+                    wahl = -s.nextInt();
                     ende = true;
                     switch (wahl) {
                         //Der Spieler möchte Callen/ Checken
-                        case 1:
+                        case -1:
                             if (tisch.raiseWert > 0) {
                                 tisch.call();
                             } else {
@@ -74,11 +74,11 @@ public class Benutzer implements Runnable {
                             }
                             break;
                         //Der Spieler möchte aussteigen
-                        case 2:
+                        case -2:
                             tisch.getCurrentSpieler().istDabei = false;
                             break;
                         //Der Spieler möchte erhöhen
-                        case 3:
+                        case -3:
                             //um zu wissen, wann die Runde zu ende ist: control der Spieler setzen
                             tisch.setControl();
                             tisch.getCurrentSpieler().control = true;
